@@ -9,6 +9,7 @@ int get_num(int sort[]);
 int buble_sort(int sort[]);
 int generate_random_num(int num[], int num_size, int num_range);
 int generate_random_num_file(char *file_name, int num[], int number_size, int num_range);
+int get_random_num_from_file(char *file_name, int num_buf[], int num_counter);
 
 int main(int argc, char **argv)
 {
@@ -16,6 +17,8 @@ int main(int argc, char **argv)
 	
 	generate_random_num(sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
 	generate_random_num_file("random_num.txt", sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
+	memset(sort, '\0', sizeof(sort));
+	get_random_num_from_file("random_num.txt", sort, NUMBER_SIZE);
 	
 	
 	buble_sort(sort);
@@ -28,11 +31,11 @@ int main(int argc, char **argv)
  * @num_buf: for random number store.
  * @num_counter: get how many random number from file.
  */
-int get_random_num_from_file(file_name, int num_buf[], int num_counter)
+int get_random_num_from_file(char *file_name, int num_buf[], int num_counter)
 {
 	FILE *fd;
 	char store_buf[1024 * 4];
-	char *num_star = NULL;
+	char *num_start = NULL;
 	char *num_end  = NULL;
 
 	while ((num_buf = malloc(1024 * 4)) == NULL) {
@@ -41,7 +44,6 @@ int get_random_num_from_file(file_name, int num_buf[], int num_counter)
 	}
 
 	memset(store_buf, '\0', 1024 * 4);
-	printf("num_buf = %s\n", num_buf);
 
 	if ((fd = fopen(file_name, "r")) < 0) {
 		fputs("fopen error while get random num from file.\n", stderr);
@@ -50,11 +52,18 @@ int get_random_num_from_file(file_name, int num_buf[], int num_counter)
 
 	fgets(store_buf, sizeof(store_buf), fd);
 	num_start = strstr(store_buf, '-');
+	num_end = strstr(num_start + 1, '-');
+	memset(store_buf, '\0', sizeof(store_buf));
+	printf("in the beginning, num_start pointer: %c\nnum_end pointer: %c\n", *num_start, *num_end);
 	while (fgets(num_buf, sizeof(num_buf), fd) != NULL) {
-		num_end = strstr(num_buf, '-');	
+		memcpy(store_buf, num_end - num_start, num_start);
+		printf("store buffer: %s\n", store_buf);
+		num_start = strstr(num_buf, '-');
+		num_end = strstr(num_start + 1, '-');
+		printf("num_start pointer: %c\nnum_end pointer: %c\n", *num_start, *num_end);
 	}
 	
-	
+	return 0;	
 }
  
 /*

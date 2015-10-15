@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <time.h>
 
-#define NUMBER_SIZE 5000
-#define RANDOM_NUMBER_RANGE 10000
+#define NUMBER_SIZE 50
+#define RANDOM_NUMBER_RANGE 1000
 
 int get_num(int sort[]);
 int buble_sort(int sort[]);
@@ -16,7 +18,11 @@ int main(int argc, char **argv)
 	int sort[NUMBER_SIZE] = {0};
 	
 	generate_random_num(sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
+//	sleep(5);
 	generate_random_num_file("random_num.txt", sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
+	printf("generate random num file done.\n");
+//	sleep(5);
+
 	memset(sort, '\0', sizeof(sort));
 	get_random_num_from_file("random_num.txt", sort, NUMBER_SIZE);
 	
@@ -51,15 +57,18 @@ int get_random_num_from_file(char *file_name, int num_buf[], int num_counter)
 	}
 
 	fgets(store_buf, sizeof(store_buf), fd);
-	num_start = strstr(store_buf, '-');
-	num_end = strstr(num_start + 1, '-');
+	printf("store buffer: %s\n", store_buf);
+
+	num_start = strstr((const char *)store_buf, "-");
+	num_end = strstr((const char *)num_start + 1, "-");
+	printf("in the beginning, num_start pointer: %s\nnum_end pointer: %s\n", num_start, num_end);
+
 	memset(store_buf, '\0', sizeof(store_buf));
-	printf("in the beginning, num_start pointer: %c\nnum_end pointer: %c\n", *num_start, *num_end);
-	while (fgets(num_buf, sizeof(num_buf), fd) != NULL) {
-		memcpy(store_buf, num_end - num_start, num_start);
+	while ((fgets(store_buf, sizeof(store_buf), fd)) != NULL) {
+		memcpy(store_buf, num_start, num_end - num_start);
 		printf("store buffer: %s\n", store_buf);
-		num_start = strstr(num_buf, '-');
-		num_end = strstr(num_start + 1, '-');
+		num_start = strstr((const char *)store_buf, "-");
+		num_end = strstr((const char *)num_start + 1, "-");
 		printf("num_start pointer: %c\nnum_end pointer: %c\n", *num_start, *num_end);
 	}
 	
@@ -100,9 +109,10 @@ int generate_random_num_file(char *file_name, int num[], int num_size, int num_r
 		}
 	}
 	printf("\n");
-
+	
+	sprintf(store_buf, "$");
 	for (i = 0; i < num_size; i++) {
-		sprintf(store_buf, "-%s-%d", store_buf, num[i]);
+		sprintf(store_buf, "%s-%d", store_buf, num[i]);
 	}
 	printf("store buf = %s\n", store_buf);
 	fputs(store_buf, fd);

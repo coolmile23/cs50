@@ -9,6 +9,6 @@ main:$(OBJ)
 	$(CC) $(CFLAGS) $(OBJ)
 
 clean:
-	rm *.o
+	rm *.o 
 
 all: main clean

@@ -8,8 +8,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define NUMBER_SIZE 100
-#define RANDOM_NUMBER_RANGE 1000
+#define NUMBER_SIZE 100000
+#define RANDOM_NUMBER_RANGE 10
 
 int get_num(int sort[], int num);
 int generate_random_num(int num[], int num_size, int num_range);
@@ -17,6 +17,7 @@ int generate_random_num_file(char *file_name, int num[], int number_size, int nu
 int get_random_num_from_file(char *file_name, int num_buf[], int num_counter, int max_num_length);
 int buble_sort(int sort[], int num_size);
 int merge_sort(int sort[], int start_index, int end_index);
+int statistic_num(int num[], int num_size, int num_range);
 static int merge(int sort[], int start_index, int mid_index, int end_index);
 
 int main(int argc, char **argv)
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
 
 //	buble_sort(sort_size);
 
+	statistic_num(sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
 	return 0;
 }
 
@@ -256,5 +258,24 @@ static int merge(int sort[], int start_index, int mid_index, int end_index)
 		sort[start_index + iter] = temp_array[iter];
 	}
 
+	return 0;
+}
+
+int statistic_num(int num[], int num_size, int num_range)
+{
+	int temp_buf[num_range];
+	int iterator = 0;
+	int i = 0;
+
+	memset(temp_buf, 0, sizeof(temp_buf));
+
+	iterator = num_size - 1;
+	while (iterator-- >= 0) {
+		temp_buf[num[iterator]]++;
+	}
+
+	for (i = 0; i < num_range; i++) {
+		printf("%d:\t%d\n", i, temp_buf[i]);
+	}
 	return 0;
 }

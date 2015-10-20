@@ -1,0 +1,19 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -ggdb  -Wall -std=gnu99 -Werror -Wformat=0 -O0 -o main$/;"	m
+NUMBER_SIZE	buble_sort.c	11;"	d	file:
+OBJ	Makefile	/^OBJ = buble_sort.o$/;"	m
+RANDOM_NUMBER_RANGE	buble_sort.c	12;"	d	file:
+buble_sort	buble_sort.c	/^int buble_sort(int sort[])$/;"	f
+generate_random_num	buble_sort.c	/^int generate_random_num(int num[], int num_size, int num_range)$/;"	f
+generate_random_num_file	buble_sort.c	/^int generate_random_num_file(char *file_name, int num[], int num_size, int num_range)$/;"	f
+get_num	buble_sort.c	/^int get_num(int sort[])$/;"	f
+get_random_num_from_file	buble_sort.c	/^int get_random_num_from_file(char *file_name, int num_buf[], int num_counter)$/;"	f
+main	buble_sort.c	/^int main(int argc, char **argv)$/;"	f
+merge	buble_sort.c	/^static int merge(int sort[], int start_index, int mid_index, int end_index)$/;"	f	file:
+merge_sort	buble_sort.c	/^int merge_sort(int sort[], int start_index, int end_index)$/;"	f

@@ -107,7 +107,7 @@ int generate_random_num_file(char *file_name, int num[], int num_size, int num_r
 	
 
 	/* num_size for '|' store and 1 for '\0' */
-	if ((store_buf = malloc(sizeof(int) * (num_size + 1) + 1)) == NULL) {
+	if ((store_buf = (char *)malloc(sizeof(int) * (num_size + 1) + 1)) == NULL) {
 		fputs("malloc fail.\n", stderr);
 		return 1;
 	}

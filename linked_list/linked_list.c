@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -9,12 +10,10 @@ typedef struct student {
 }node;
 
 int insert_node(node *head, int id);
+int delete_node(node *head, int id);
 
 int main(int argc, char **argv)
 {
-	node *s1 = NULL;
-	node *s2 = NULL;
-	node *s3 = NULL;
 	node *head = NULL;
 	node *iterator = NULL;
 
@@ -30,49 +29,16 @@ int main(int argc, char **argv)
 		insert_node(head, 0);
 	}
 
+	printf("insert before number 22:\n");
+	insert_node(head, 22);
+
 	iterator = head;
 	while (iterator->next != NULL) {
 		iterator = iterator->next;
 		printf("%d\t%s\n", iterator->id, iterator->name);
 	}
 
-/*
-	printf("inited.\n");
-	if ((s1 = (node *)malloc(sizeof(node))) == NULL) {
-		fputs("malloc error.\n", stderr);
-		return 1;
-	}
 
-	if ((s2 = (node *)malloc(sizeof(node))) == NULL) {
-		fputs("malloc error.\n", stderr);
-		return 1;
-	}
-
-	if ((s3 = (node *)malloc(sizeof(node))) == NULL) {
-		fputs("malloc error.\n", stderr);
-		return 1;
-	}
-
-	memcpy(s1->name, "mike", sizeof("mike"));
-	s1->id = 10086;
-	s1->next = NULL;
-
-	head->next = s1;
-
-	memcpy(s2->name, "jack", sizeof("jack"));
-	s2->id = 10011;
-	s2->next = NULL;
-		
-	s1->next = s2;
-
-	memcpy(s3->name, "miles", sizeof("miles"));
-	s3->id = 10088;
-	s3->next = NULL;
-	s2->next = s3;
-
-	node *p;
-	p = head->next;	
-	
 	FILE *fd = NULL;
 
 	if ((fd = fopen("user.db", "w+")) == NULL) {
@@ -80,21 +46,23 @@ int main(int argc, char **argv)
 		return 2;
 	}
 
+	node *p = head;
+	while (p != NULL) {
+		printf("%d\t%s\n", p->id, p->name);
+		fprintf(fd, "%d\t%s\n", p->id, p->name);
+		p = p->next;	
+	}
+	delete_node(head, 22);
+	printf("after delete number 22:\n");
+	p = head;
 	while (p != NULL) {
 		printf("%d\t%s\n", p->id, p->name);
 		fprintf(fd, "%d\t%s\n", p->id, p->name);
 		p = p->next;	
 	}
 
-	free(s1);
-	free(s2);
-	free(s3);
 	fclose(fd);
 	return 0;
-*/
-
-	
-
 }
 
 
@@ -107,56 +75,43 @@ int insert_node(node *head, int id)
 
 	iterator = head;
 
-/*	if (iterator->next == NULL) {
+	/* id = 0 means insert into the linked list tail by default */
+	if (id == 0) {
+		while (iterator->next != NULL) {
+			iterator = iterator->next;
+		}
+			
 		if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
 			fputs("allocation fail.\n", stderr);
 			return 1;
 		}
-		printf("input id:\n");
-		scanf("%d", &(new_node->id));	
+
+		printf("input id:");
+		scanf("%4d", &(new_node->id));	
 		printf("input name:\n");
 		scanf("%s", new_node->name);
+
 		iterator->next = new_node;
 		new_node->next = NULL;
-		head = iterator;
-	}
-*/
-	while (iterator->next != NULL) {
-/*		if (iterator->next->id == id) {
-			if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
-				fputs("allocation fail.\n", stderr);
-				return 1;
+	} else { /* insert node befor id */
+		while (iterator->next != NULL) {
+			if (iterator->next->id == id) {
+				node *temp_node = iterator->next;
+				if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
+					fputs("allocation fail.\n", stderr);
+					return 1;
+				}
+				printf("input insert id:");
+				scanf("%4d", &(new_node->id));	
+				printf("input insert name:\n");
+				scanf("%s", new_node->name);
+				iterator->next = new_node;	
+				new_node->next = temp_node;
+				break;
 			}
-			printf("input id:\n");
-			scanf("%d", &(new_node->id));	
-			printf("input name:\n");
-			scanf("%s", new_node->name);
-			iterator->next->next = new_node;	
-			new_node->next = NULL;
-		}
-*/
-		if (iterator->next->next != NULL) {
 			iterator = iterator->next;
-			continue;
 		}
-		break;
 	}
-	//if (iterator->next->id == id) {
-		if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
-			fputs("allocation fail.\n", stderr);
-			return 1;
-		}
-		printf("input id:\n");
-		scanf("%d", &(new_node->id));	
-		printf("input name:\n");
-		scanf("%s", new_node->name);
-		if (iterator->next == NULL) {
-			head->next = new_node;
-		} else {
-			iterator->next->next = new_node;	
-		}
-		new_node->next = NULL;
-	//}
 
 	return 0;
 }
@@ -172,9 +127,18 @@ int delete_node(node *head, int id)
 	iterator = head;
 
 	while (iterator->next != NULL) {
-		if (iterator->id == id) {
-
+		if (iterator->next->id == id) {
+			if (iterator->next->next == NULL) {
+				free(iterator->next);		
+				iterator->next = NULL;
+			} else {
+				node *temp_node = iterator->next;
+				iterator->next = temp_node->next;
+				free(temp_node);
+			}
 		}
 		iterator = iterator->next;
 	}
+
+	return 0;
 }

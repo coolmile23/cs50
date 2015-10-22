@@ -8,7 +8,7 @@ typedef struct student {
 	struct student *next;
 }node;
 
-int init_node(node *head);
+int insert_node(node *head, int id);
 
 int main(int argc, char **argv)
 {
@@ -16,9 +16,27 @@ int main(int argc, char **argv)
 	node *s2 = NULL;
 	node *s3 = NULL;
 	node *head = NULL;
+	node *iterator = NULL;
 
-	init_node(head);
+	if ((head = (node *)malloc(sizeof(node))) == NULL) {
+		fputs("init node error.\n", stderr);
+		return 1;
+	}
+	head->id = 0;
+	head->next = NULL;
 
+	int iter = 0;
+	for (iter = 0; iter < 3; iter++) {
+		insert_node(head, 0);
+	}
+
+	iterator = head;
+	while (iterator->next != NULL) {
+		iterator = iterator->next;
+		printf("%d\t%s\n", iterator->id, iterator->name);
+	}
+
+/*
 	printf("inited.\n");
 	if ((s1 = (node *)malloc(sizeof(node))) == NULL) {
 		fputs("malloc error.\n", stderr);
@@ -73,25 +91,90 @@ int main(int argc, char **argv)
 	free(s3);
 	fclose(fd);
 	return 0;
+*/
+
+	
+
 }
 
 
-int init_node(node *head)
+
+int insert_node(node *head, int id)
 {
-	if ((head = (node *)malloc(sizeof(node))) == NULL) {
-		fputs("init node error.\n", stderr);
-		return 1;
+	node *iterator = NULL;	
+	node *new_node = NULL;
+
+
+	iterator = head;
+
+/*	if (iterator->next == NULL) {
+		if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
+			fputs("allocation fail.\n", stderr);
+			return 1;
+		}
+		printf("input id:\n");
+		scanf("%d", &(new_node->id));	
+		printf("input name:\n");
+		scanf("%s", new_node->name);
+		iterator->next = new_node;
+		new_node->next = NULL;
+		head = iterator;
 	}
-	head->next = NULL;
+*/
+	while (iterator->next != NULL) {
+/*		if (iterator->next->id == id) {
+			if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
+				fputs("allocation fail.\n", stderr);
+				return 1;
+			}
+			printf("input id:\n");
+			scanf("%d", &(new_node->id));	
+			printf("input name:\n");
+			scanf("%s", new_node->name);
+			iterator->next->next = new_node;	
+			new_node->next = NULL;
+		}
+*/
+		if (iterator->next->next != NULL) {
+			iterator = iterator->next;
+			continue;
+		}
+		break;
+	}
+	//if (iterator->next->id == id) {
+		if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
+			fputs("allocation fail.\n", stderr);
+			return 1;
+		}
+		printf("input id:\n");
+		scanf("%d", &(new_node->id));	
+		printf("input name:\n");
+		scanf("%s", new_node->name);
+		if (iterator->next == NULL) {
+			head->next = new_node;
+		} else {
+			iterator->next->next = new_node;	
+		}
+		new_node->next = NULL;
+	//}
+
 	return 0;
 }
 
-int inset_node(node *head, node *insert_node, int id)
+/* input linked list's head and which id to delete.
+ * @head: linked list need to be process.
+ * @id:	  the id of node to be deleted
+ */ 
+int delete_node(node *head, int id)
 {
-	
-}
+	node *iterator = NULL;
 
-int delete_node()
-{
+	iterator = head;
 
+	while (iterator->next != NULL) {
+		if (iterator->id == id) {
+
+		}
+		iterator = iterator->next;
+	}
 }

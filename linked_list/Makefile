@@ -1,0 +1,1 @@
+CFLAGS = -g -Werror -Wall 

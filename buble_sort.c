@@ -1,4 +1,5 @@
 /*buble sort and some*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +15,7 @@
 #define NUMBER_SIZE 		200000
 #define RANDOM_NUMBER_RANGE 	100000
 #define RANDOM_NUMBER_BASE	100000
-
+/*good*/
 int insert_node(node *head, int index_id, int id, char *name);
 int get_num(int sort[], int num);
 int generate_random_num(int num[], int num_size, int base_num, int num_range);

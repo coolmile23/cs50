@@ -1,4 +1,4 @@
-CFLAGS = -ggdb  -Wall -std=gnu99 -Werror -Wformat=0 -O0 -o main
+CFLAGS = -ggdb  -Wall -std=gnu99 -Werror -Wformat=0 -O0 -o main -lthread
 
 CC = gcc
 

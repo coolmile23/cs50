@@ -10,7 +10,7 @@
 
 #include "linked_list.h"
 
-#define NUMBER_SIZE 		200
+#define NUMBER_SIZE 		200000
 #define RANDOM_NUMBER_RANGE 	100000
 #define RANDOM_NUMBER_BASE	100000
 

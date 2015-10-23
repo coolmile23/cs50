@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "linked_list.h"
 
 
@@ -115,7 +110,7 @@ int insert_node(node *head, int id)
  * @head: linked list need to be process.
  * @id:	  the id of node to be deleted
  */ 
-int delete_node(node *head, int id)
+extern int delete_node(node *head, int id)
 {
 	node *iterator = NULL;
 

@@ -8,11 +8,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define NUMBER_SIZE 100000
-#define RANDOM_NUMBER_RANGE 10
+#include "linked_list.h"
 
+#define NUMBER_SIZE 		200
+#define RANDOM_NUMBER_RANGE 	100000
+#define RANDOM_NUMBER_BASE	100000
+
+int insert_node(node *head, int index_id, int id, char *name);
 int get_num(int sort[], int num);
-int generate_random_num(int num[], int num_size, int num_range);
+int generate_random_num(int num[], int num_size, int base_num, int num_range);
 int generate_random_num_file(char *file_name, int num[], int number_size, int num_range);
 int get_random_num_from_file(char *file_name, int num_buf[], int num_counter, int max_num_length);
 int buble_sort(int sort[], int num_size);
@@ -24,12 +28,44 @@ int main(int argc, char **argv)
 {
 	int sort[NUMBER_SIZE] = {0};
 	memset(sort, '\0', sizeof(sort));
+	char *name[NUMBER_SIZE] = {"hi", "hello", "good", "day", "job"}; 
 
-	generate_random_num(sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
-	generate_random_num_file("random_num.txt", sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
+	int j = 0;
+	for (j = 5; j < NUMBER_SIZE; j++) {
+		name[j] = name[0];
+	}
+		
+	FILE *fd = fopen("userdata.txt", "w+");
+
+	node *head = NULL;
+	
+	if ((head = (node *)malloc(sizeof(node))) == NULL) {
+		fputs("malloc fail.\n", stderr);
+		return 1;
+	}
+	
+	generate_random_num(sort, NUMBER_SIZE, RANDOM_NUMBER_BASE, RANDOM_NUMBER_RANGE);
+
+	int temp_i;
+	for (temp_i = 0; temp_i < NUMBER_SIZE; temp_i++) {
+		insert_node(head, 0, sort[temp_i], name[temp_i]);
+	}
+
+	node *iterator_node = head->next;
+
+	while (iterator_node != NULL) {
+		printf("id:%-10d\tname:%s\n", iterator_node->id, iterator_node->name);
+		fprintf(fd, "%d %s\n", iterator_node->id, iterator_node->name);
+		iterator_node = iterator_node->next;
+	}
+	fclose(fd);
+
+	
+
+//	generate_random_num_file("random_num.txt", sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
 //	printf("generate random num file done.\n sort: %s\n", sort);
 
-	get_random_num_from_file("random_num.txt", sort, NUMBER_SIZE, 4);
+/*	get_random_num_from_file("random_num.txt", sort, NUMBER_SIZE, 4);
 	
 	merge_sort(sort, 0, NUMBER_SIZE - 1);
 
@@ -38,18 +74,19 @@ int main(int argc, char **argv)
 		printf("%d\t", sort[i]);
 	}
 	printf("\n");
-
+*/
 //	buble_sort(sort_size);
 
-	statistic_num(sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
+//	statistic_num(sort, NUMBER_SIZE, RANDOM_NUMBER_RANGE);
 	return 0;
 }
 
 /* get random number from file.
- * @file_name:	 the name of file stored random number.
- * @num_buf:	 for random number store.
- * @num_counter: get how many random number from file.
- * @max_num_length: a number's max length.
+ *
+ * @file_name:	 	the name of file stored random number.
+ * @num_buf:	 	for random number store.
+ * @num_counter: 	get how many random number from file.
+ * @max_num_length: 	a number's max length.
  */
 int get_random_num_from_file(char *file_name, int num_buf[], int num_counter, int max_num_length)
 {
@@ -151,13 +188,14 @@ int generate_random_num_file(char *file_name, int num[], int num_size, int num_r
 /* generate random number and stored in num[]
  * @num_size: 	how many random number you want.
  * @num_range: 	the max random number.
+ * @base_num:	the min random number.
  */
-int generate_random_num(int num[], int num_size, int num_range)
+int generate_random_num(int num[], int num_size, int base_num, int num_range)
 {
 	int iter = 0;
 	srandom(time(0));
 	for (iter = 0; iter < num_size; iter++) {
-		num[iter] = random() % num_range;
+		num[iter] = random() % num_range + base_num;
 	}
 
 	return 0;
@@ -277,5 +315,70 @@ int statistic_num(int num[], int num_size, int num_range)
 	for (i = 0; i < num_range; i++) {
 		printf("%d:\t%d\n", i, temp_buf[i]);
 	}
+	return 0;
+}
+
+
+
+/* insert a new node to linked list
+ * @head:	linked list's head pointer
+ * @index_id:	insert before this id, if index_id = 0, insert to the tail. 
+ * @id:		insert node's id
+ * @name:	insert node's name
+ */
+int insert_node(node *head, int index_id, int id, char *name)
+{
+	node *iterator = NULL;	
+	node *new_node = NULL;
+
+
+	iterator = head;
+
+	/* id = 0 means insert into the linked list tail by default */
+	if (index_id == 0) {
+		while (iterator->next != NULL) {
+			iterator = iterator->next;
+		}
+			
+		if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
+			fputs("allocation fail.\n", stderr);
+			return 1;
+		}
+/*
+		printf("input id:");
+		scanf("%d", &(new_node->id));	
+		printf("input name:\n");
+		scanf("%s", new_node->name);
+*/
+		new_node->id = id;
+		memcpy(new_node->name, name, sizeof(new_node->name));
+
+		iterator->next = new_node;
+		new_node->next = NULL;
+	} else { /* insert node befor id */
+		while (iterator->next != NULL) {
+			if (iterator->next->id == id) {
+				node *temp_node = iterator->next;
+				if ((new_node = (node *)malloc(sizeof(node))) == NULL) {
+					fputs("allocation fail.\n", stderr);
+					return 1;
+				}
+/*
+				printf("input insert id:");
+				scanf("%4d", &(new_node->id));	
+				printf("input insert name:\n");
+				scanf("%s", new_node->name);
+*/
+				new_node->id = id;
+				memcpy(new_node->name, name, sizeof(new_node->name));
+
+				iterator->next = new_node;	
+				new_node->next = temp_node;
+				break;
+			}
+			iterator = iterator->next;
+		}
+	}
+
 	return 0;
 }
